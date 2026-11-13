@@ -1,0 +1,24 @@
+# Scenario 04: OOMKilled (container allocates more memory than its limit)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-hog
+  namespace: lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-hog
+  template:
+    metadata:
+      labels:
+        app: memory-hog
+    spec:
+      containers:
+        - name: stress
+          image: polinux/stress
+          command: ["stress"]
+          args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
+          resources:
+            requests: { memory: 32Mi }
+            limits: { memory: 50Mi }   # 150M allocation > 50Mi limit

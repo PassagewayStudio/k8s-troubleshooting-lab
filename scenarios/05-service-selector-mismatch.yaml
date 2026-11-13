@@ -1,0 +1,13 @@
+# Scenario 05: wrong Service selector (pods are healthy, Service has no endpoints)
+# Targets the healthy baseline "web" pods (label app=web) with a typo'd selector.
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-badselector
+  namespace: lab
+spec:
+  selector:
+    app: web   # pods are labelled app=web
+  ports:
+    - port: 80
+      targetPort: 80

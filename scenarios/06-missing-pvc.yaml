@@ -1,0 +1,29 @@
+# Scenario 06: missing PVC (pod stuck Pending, claim does not exist)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-nopvc
+  namespace: lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-nopvc
+  template:
+    metadata:
+      labels:
+        app: db-nopvc
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              value: lab-only-password
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: db-data-new   # never created

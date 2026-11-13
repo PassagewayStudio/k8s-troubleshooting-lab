@@ -1,0 +1,29 @@
+# Scenario 02: CrashLoopBackOff (bad config: Postgres started with no superuser password)
+# The container starts, prints an error, exits 1, and the kubelet keeps restarting it.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-badconfig
+  namespace: lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-badconfig
+  template:
+    metadata:
+      labels:
+        app: db-badconfig
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+           # POSTGRES_PASSWORD intentionally missing
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          emptyDir: {}
